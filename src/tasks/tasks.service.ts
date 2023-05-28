@@ -4,12 +4,17 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { TasksRepository } from './task.repository';
 import { Task } from './task.entity';
 import { TaskStatus } from './task-status.enum';
+import { GetTasksFilterDto } from './dto/get-task-filter.dto';
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(TasksRepository) private tasksRepository: TasksRepository,
   ) {}
+
+  async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
+    return await this.tasksRepository.getTasks(filterDto);
+  }
 
   async getTaskById(taskId: number): Promise<Task> {
     const found = await this.tasksRepository.findOneById(taskId);
