@@ -42,8 +42,12 @@ export class TasksRepository extends Repository<Task> {
     task.description = createTaskDto.description;
     task.user = user;
 
-    task.save();
-    return task;
+    await task.save();
+
+    const taskResponse = JSON.parse(JSON.stringify(task));
+    delete taskResponse.user;
+
+    return taskResponse;
   }
 
   async deleteTaskById(taskId: number): Promise<any> {
