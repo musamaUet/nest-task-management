@@ -13,7 +13,7 @@ export class AuthController {
     return await this.authService.signUp(authCredentials);
   }
 
-  @Post('signin')
+  @Post('/signin')
   async signIn(@Body(ValidationPipe) authCredentials: AuthCredentialsDto) {
     return await this.authService.signIn(authCredentials);
   }
