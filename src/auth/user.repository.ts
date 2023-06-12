@@ -40,11 +40,16 @@ export class UserRepository extends Repository<User> {
   ): Promise<string | null> {
     const { username, password } = authCredentials;
 
-    const user = await this.findOne({ where: { username } });
+    try {
+      const user = await this.findOne({ where: { username } });
 
-    if (user && (await user.validatePassword(password))) {
-      return user.username;
-    } else return null;
+      if (user && (await user.validatePassword(password))) {
+        return user.username;
+      } else return null;
+    } catch (err) {
+      console.log('err', err);
+      return null;
+    }
   }
 
   private async hashPassword(password, salt): Promise<string> {
