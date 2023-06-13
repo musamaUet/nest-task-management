@@ -24,4 +24,8 @@ export class Task extends BaseEntity {
 
   @ManyToOne((type) => User, (user) => user.tasks, { eager: false })
   user: User;
+
+  // This attribute is created automatically the above oneToMany relationship with user's table
+  @Column()
+  userId: number;
 }
