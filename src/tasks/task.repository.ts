@@ -12,9 +12,12 @@ export class TasksRepository extends Repository<Task> {
     super(Task, dataSource.createEntityManager());
   }
 
-  async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
+  async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
+    console.log('userId', typeof user.id, user.id);
+    query.where('task.userId = :userId', { userId: user.id });
+
     if (status) {
       query.andWhere('task.status = :status', { status });
     }
@@ -26,6 +29,9 @@ export class TasksRepository extends Repository<Task> {
     }
 
     const tasks = await query.getMany();
+
+    console.log('tasks', user);
+
     return tasks;
   }
   async findOneById(id: number): Promise<Task | null> {
@@ -42,8 +48,12 @@ export class TasksRepository extends Repository<Task> {
     task.description = createTaskDto.description;
     task.user = user;
 
-    task.save();
-    return task;
+    await task.save();
+
+    const taskResponse = JSON.parse(JSON.stringify(task));
+    delete taskResponse.user;
+
+    return taskResponse;
   }
 
   async deleteTaskById(taskId: number): Promise<any> {
