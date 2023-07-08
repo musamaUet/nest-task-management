@@ -15,7 +15,6 @@ export class TasksRepository extends Repository<Task> {
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
-    console.log('userId', typeof user.id, user.id);
     query.where('task.userId = :userId', { userId: user.id });
 
     if (status) {
@@ -30,13 +29,11 @@ export class TasksRepository extends Repository<Task> {
 
     const tasks = await query.getMany();
 
-    console.log('tasks', user);
-
     return tasks;
   }
-  async findOneById(id: number): Promise<Task | null> {
+  async findOneByIdAndUser(id: number, user: User): Promise<Task | null> {
     const task = await this.findOne({
-      where: { id: id },
+      where: { id: id, userId: user.id },
     });
     return task || null;
   }
